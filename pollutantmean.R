@@ -14,10 +14,9 @@ for(file in files[id])                                  # import each selected d
         }
 
 data <- data[-nrow(data),]      #remove empty row from dataframe
-
-data_mean <- mean(data[, pollutant], na.rm = TRUE)
-print(data_mean)
-return(data)
+pollutant_mean <- mean(data[, pollutant], na.rm = TRUE)  # pollutant mean from selected stations
+# print(pollutant_mean)
+return(pollutant_mean)
 }
 
 ## 'directory' is a character vector of length 1 indicating
@@ -32,6 +31,3 @@ return(data)
 
 ## Return the mean of the pollutant across all monitors list
 ## in the 'id' vector (ignoring NA values)
-
-# Import each .CSV file into a data frame (e.g. 009.csv -> `009`)
-# directory <- "~/RprogrammingWeek2/specdata/"
