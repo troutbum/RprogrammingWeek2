@@ -1,33 +1,34 @@
+# this function reads a directory full of files (or specified subset) and 
+# reports the number of completely observed cases in each data file.
+# returns a dataframe(filename, number_complete_cases)
+
 complete <- function(directory, id = 1:332) {
         
-        path <- paste(directory,"/", sep = "")  # full path to datafile directory
-        files <- list.files(path, pattern="*.csv")  # create list of data files
-        #data <- data.frame(Date = NA, sulfate = NA, nitrate = NA, ID = NA) # Empty dataframe to concatenate data files
-        good_tally <- data.frame(id = NA, nobs = NA)
+        path <- paste(directory,"/", sep = "")          # full path to datafile directory
+        files <- list.files(path, pattern="*.csv")      # create list of data files
+        StnObsCntList <- data.frame(id = NA, nobs = NA) # create empty output datafrme
         
-        for(file in files[id])                                  # import each selected data file
+        for(file in files[id])                          # import each selected CSV file
         {
                 perpos <- which(strsplit(file, "")[[1]]==".")
                 assign(
                         gsub(" ","",substr(file, 1, perpos-1)), 
-                        filedata <- read.csv(paste(path,file,sep="")))
+                        filedata <- read.csv(paste(path,file,sep="")))  # read each CSV file
                 
                 good <- complete.cases(filedata) # creates logical vector of good cases
                 good.filedata <- filedata[good,] # dataframe of good cases
-                rows <- nrow(good.filedata)
-                station <- filedata[1,"ID"]
                 
-                station_good_rows <- data.frame(id = station, nobs = rows)
+                rows <- nrow(good.filedata)     # count good rows
+                station <- filedata[1,"ID"]     # determine station ID
                 
-                #print(rows)
-                #print(station)
+                result <- data.frame(id = station, nobs = rows)  # create a row (station ID, rows)
                 
-                good_tally <- rbind(station_good_rows,good_tally)                    # append data files together
+                StnObsCntList <- rbind(result,StnObsCntList)  # append data files together
                 
         }
-        good_tally <- good_tally[-nrow(good_tally),]      #remove empty row from dataframe
+        StnObsCntList <- StnObsCntList[-nrow(StnObsCntList),]      #remove empty row from dataframe
         
-        return(good_tally)
+        return(StnObsCntList)
 }
         
         ## 'directory' is a character vector of length 1 indicating
