@@ -1,34 +1,26 @@
 corr <- function(directory, threshold = 0) {
                    
-        StnList <- complete(directory)               # returns stations and their good obs
-        StnListAbove <- subset(StnList, nobs > threshold)
+        StnList <- complete(directory)                    # returns stations and their good obs
+        StnsAbove <- subset(StnList, nobs > threshold)    # station above threholds
+        SortedStns <- StnsAbove[order(StnsAbove[,"id"]),] # sort output by ID number
+        StnIDs <- SortedStns[,"id"]                       # IDs of Stations to analyze
         
-        path <- paste(directory,"/", sep = "")  # full path to datafile directory
-        files <- list.files(path, pattern="*.csv")  # create list of data files
+        path <- paste(directory,"/", sep = "")            # full path to datafile directory
+        files <- list.files(path, pattern="*.csv")        # create list of data files in directory
         
-        # data <- data.frame(Date = NA, sulfate = NA, nitrate = NA, ID = NA) 
-        # Empty dataframe to concatenate data files
-        for(file in files[id])                          # import each selected CSV file
+        correlations <- rep(NULL, length(StnIDs))         # pre-allocate results vector   
+        for(i in files[StnIDs])                           # import each selected CSV file
         {
-                perpos <- which(strsplit(file, "")[[1]]==".")
-                assign(
-                        gsub(" ","",substr(file, 1, perpos-1)), 
-                        filedata <- read.csv(paste(path,file,sep="")))  # read each CSV file
                 
-                good <- complete.cases(filedata) # creates logical vector of good cases
-                good.filedata <- filedata[good,] # dataframe of good cases
+                filedata <- read.csv(paste(path,i,sep=""),na.strings = "NA",)  # read each CSV file
+                good <- complete.cases(filedata)         # creates logical vector of good cases
+                completedata <- filedata[good,]          # dataframe of good cases                
                 
-                rows <- nrow(good.filedata)     # count good rows
-                station <- filedata[1,"ID"]     # determine station ID
-                
-                result <- data.frame(id = station, nobs = rows)  # create a row (station ID, rows)
-                
-                StnObsCntList <- rbind(result,StnObsCntList)  # append data files together
-                
+                correlations[i] <- cor(completedata[,"sulfate"],completedata[,"nitrate"])
+                #print(correlations[i])                        
         }   
         
-        
-        # return(StnListAbove)  # fix
+        return(correlations)
 }
 
 ## 'directory' is a character vector of length 1 indicating

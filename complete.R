@@ -26,7 +26,7 @@ complete <- function(directory, id = 1:332) {
                 StnObsCntList <- rbind(result,StnObsCntList)  # append data files together
                 
         }
-        StnObsCntList <- StnObsCntList[-nrow(StnObsCntList),]      #remove empty row from dataframe
+        StnObsCntList <- StnObsCntList[-nrow(StnObsCntList),]        # remove empty row from dataframe
         
         return(StnObsCntList)
 }
