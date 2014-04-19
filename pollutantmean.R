@@ -1,4 +1,4 @@
-pollutantmean <- function(directory, pollutant, id) {
+pollutantmean <- function(directory, pollutant, id = 1:332) {
 
 path <- paste(directory,"/", sep = "")  # full path to datafile directory
 files <- list.files(path, pattern="*.csv")  # create list of data files
