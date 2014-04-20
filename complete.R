@@ -1,5 +1,5 @@
 # this function reads a directory full of files (or specified subset) and 
-# reports the number of completely observed cases in each data file.
+# reports the number of completely observed cases (no NAs) in each data file.
 # returns a dataframe(filename, number_complete_cases)
 
 complete <- function(directory, id = 1:332) {
@@ -11,15 +11,15 @@ complete <- function(directory, id = 1:332) {
         StnObsCntList <- data.frame(id = numeric(id_length), nobs = numeric(id_length))        
         i <- 1
         
-        for(file in files[id])                          # import each selected CSV file
+        for(filename in files[id])                          # import each selected CSV file
         {
-                perpos <- which(strsplit(file, "")[[1]]==".")
+                perpos <- which(strsplit(filename, "")[[1]]==".")
                 assign(
-                        gsub(" ","",substr(file, 1, perpos-1)), 
-                        filedata <- read.csv(paste(path,file,sep="")))  # read each CSV file
+                        gsub(" ","",substr(filename, 1, perpos-1)), 
+                        filedata <- read.csv(paste(path,filename,sep="")))  # read each CSV file
                 
-                good <- complete.cases(filedata) # creates logical vector of good cases
-                good.filedata <- filedata[good,] # dataframe of good cases
+                good <- complete.cases(filedata)        # creates logical vector of good cases
+                good.filedata <- filedata[good,]        # dataframe of good cases
                 
                 rows <- nrow(good.filedata)     # count good rows
                 station <- filedata[1,"ID"]     # determine station ID
