@@ -6,7 +6,10 @@ complete <- function(directory, id = 1:332) {
         
         path <- paste(directory,"/", sep = "")          # full path to datafile directory
         files <- list.files(path, pattern="*.csv")      # create list of data files
-        StnObsCntList <- data.frame(id = NA, nobs = NA) # create empty output datafrme
+       
+        id_length <- length(id)                         # create empty output dataframe
+        StnObsCntList <- data.frame(id = numeric(id_length), nobs = numeric(id_length))        
+        i <- 1
         
         for(file in files[id])                          # import each selected CSV file
         {
@@ -21,12 +24,10 @@ complete <- function(directory, id = 1:332) {
                 rows <- nrow(good.filedata)     # count good rows
                 station <- filedata[1,"ID"]     # determine station ID
                 
-                result <- data.frame(id = station, nobs = rows)  # create a row (station ID, rows)
-                
-                StnObsCntList <- rbind(result,StnObsCntList)  # append data files together
-                
+                StnObsCntList[i, "id"] <- station
+                StnObsCntList[i, "nobs"] <- rows
+                i <- i + 1            
         }
-        StnObsCntList <- StnObsCntList[-nrow(StnObsCntList),]        # remove empty row from dataframe
         
         return(StnObsCntList)
 }
